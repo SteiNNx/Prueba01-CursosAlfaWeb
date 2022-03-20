@@ -3,6 +3,10 @@ import App from './App.vue'
 import router from './router'
 import store from './store'
 
+/** Imports */
+require('@/plugins/bootstrap-vue');
+require('@/plugins/firebase');
+
 Vue.config.productionTip = false
 
 new Vue({
