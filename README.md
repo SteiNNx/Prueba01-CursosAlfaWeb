@@ -1,29 +1,16 @@
-# prueba-cursos-alfaweb
 
-## Project setup
-```
-npm install
-```
+# **Prueba Cursos AlfaWeb**
+Desarrollo Prueba Modulo 05 VueJS Framework
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+[Ver Sitio(Vercel)](https://pruebafirebasevuedesafiolatam.web.app/ingresar)
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Run your end-to-end tests
-```
-npm run test:e2e
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+## **Capitulos**
+* VueCLI.
+* Parent y Children Components
+* Vue Router
+* Vuex
+* Bootstrap
+* Firebase Authentication, FireStore
+* Fire Hosting
+* UnitTest: Jest
+* E2E: Cypress
