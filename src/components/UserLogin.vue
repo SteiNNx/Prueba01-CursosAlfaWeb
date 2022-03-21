@@ -19,6 +19,14 @@ export default {
   computed: {
     ...mapState(["userLogin"]),
   },
+  mounted() {
+    getAuth().onAuthStateChanged((user) => {
+      if (user) {
+        this.setUserLogin(user.email);
+        this.$router.push("/");
+      }
+    });
+  },
   methods: {
     ...mapActions(["setUserLogin"]),
     salir() {

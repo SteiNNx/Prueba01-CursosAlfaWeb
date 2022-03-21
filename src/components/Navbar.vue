@@ -6,12 +6,9 @@
         <b-icon v-else icon="border-width"></b-icon>
       </template>
     </b-navbar-toggle>
-
     <b-collapse id="navbar-toggle-collapse" is-nav class="m-2">
       <b-navbar-nav class="ml-auto">
-        <b-nav-item to="#">Link 1</b-nav-item>
-        <b-nav-item to="#">Link 2</b-nav-item>
-        <b-nav-item to="#" disabled>Disabled</b-nav-item>
+        <b-nav-item to="/admin">Admin</b-nav-item>
       </b-navbar-nav>
     </b-collapse>
     <b-navbar-brand to="/">Cursos AlfaWeb</b-navbar-brand>
@@ -20,13 +17,13 @@
 </template>
 
 <script>
-import UserLogin from '@/components/UserLogin';
+import UserLogin from "@/components/UserLogin";
 
 export default {
-    name: "Navbar",
-    components:{
-        UserLogin,
-    }
+  name: "Navbar",
+  components: {
+    UserLogin,
+  },
 };
 </script>
 
