@@ -13,29 +13,19 @@
 
 <script>
 import { mapActions, mapState } from "vuex";
-import { getAuth } from "firebase/auth";
 
 export default {
   computed: {
     ...mapState(["userLogin"]),
   },
   mounted() {
-    getAuth().onAuthStateChanged((user) => {
-      if (user) {
-        this.setUserLogin(user.email);
-        this.$router.push("/");
-      }
-    });
+    this.getUserLogin();
   },
   methods: {
-    ...mapActions(["setUserLogin"]),
-    salir() {
-      getAuth()
-        .signOut()
-        .then(() => {
-          this.$router.push("/ingresar");
-          this.setUserLogin(null);
-        });
+    ...mapActions(["setUserLogin", "getUserLogin", "logoutUser"]),
+    async salir() {
+      await this.logoutUser();
+      this.$router.push("/ingresar");
     },
     ingresar() {
       this.$router.push("/ingresar");

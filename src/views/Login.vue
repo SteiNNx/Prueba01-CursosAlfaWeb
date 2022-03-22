@@ -12,15 +12,14 @@
             id="text-password"
             v-model="user.email"
           ></b-form-input>
-
           <label for="text-password">Contraseña</label>
           <b-form-input
             type="password"
             id="text-password"
             v-model="user.password"
           ></b-form-input>
-          <b-alert class="mt-2" v-model="showDismissibleAlert">
-            {{ errorMsg }}
+          <b-alert class="mt-2" v-if="showAlert" v-model="showAlert">
+            {{ userMsjError }}
           </b-alert>
         </b-form>
       </b-col>
@@ -35,7 +34,9 @@
             >
           </b-col>
           <b-col cols="2">
-            <b-button class="w-100" variant="warning">Limpiar Validacion</b-button>
+            <b-button class="w-100" variant="warning" @click="cleanUserMsjError"
+              >Limpiar Validacion</b-button
+            >
           </b-col>
         </b-row>
       </b-col>
@@ -44,46 +45,32 @@
 </template>
 
 <script>
-import { mapActions } from "vuex";
-import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
-
-import { errorCodeToStringLabelFirebase } from "@/constants/utils";
-
+import { mapActions, mapState } from "vuex";
 export default {
   name: "Login",
   data() {
-    return {
-      user: {
-        email: "",
-        password: "",
-      },
-      errorMsg: null,
-      showDismissibleAlert: false,
-    };
+    return { user: { email: "", password: "" } };
   },
   methods: {
-    ...mapActions(["setUserLogin"]),
+    ...mapActions(["loginUser", "cleanUserMsjError"]),
     async ingresar() {
       const { email, password } = this.user;
-      const auth = getAuth();
-      await signInWithEmailAndPassword(auth, email, password)
-        .then((response) => {
-          console.log("Succesfylly login");
-          console.log(response);
-          this.setUserLogin(response?.user?.providerData[0]?.email);
-          this.$router.push("/");
-        })
-        .catch((error) => {
-          console.log(error);
-          this.errorMsg = errorCodeToStringLabelFirebase(error.code);
-          this.showDismissibleAlert = true;
-        });
+      await this.loginUser({ email, password });
+      if (this.userMsjError === null) {
+        this.$router.push("/");
+      }
     },
     cleanForm() {
       this.user = {
         email: "",
         password: "",
       };
+    },
+  },
+  computed: {
+    ...mapState(["userMsjError"]),
+    showAlert() {
+      return this.userMsjError !== null;
     },
   },
 };

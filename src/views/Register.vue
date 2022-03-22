@@ -19,6 +19,9 @@
             id="text-password"
             v-model="user.password"
           ></b-form-input>
+          <b-alert class="mt-2" v-if="showAlert" v-model="showAlert">
+            {{ userMsjError }}
+          </b-alert>
         </b-form>
       </b-col>
       <b-col class="my-4" cols="12">
@@ -29,10 +32,14 @@
             >
           </b-col>
           <b-col cols="2">
-            <b-button class="w-100" variant="danger">Limpiar Formulario</b-button>
+            <b-button class="w-100" variant="danger" @click="cleanForm"
+              >Limpiar Formulario</b-button
+            >
           </b-col>
           <b-col cols="2">
-            <b-button class="w-100" variant="warning">Limpiar Validacion</b-button>
+            <b-button class="w-100" variant="warning" @click="cleanUserMsjError"
+              >Limpiar Validacion</b-button
+            >
           </b-col>
         </b-row>
       </b-col>
@@ -41,26 +48,34 @@
 </template>
 
 <script>
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-
+import { mapActions, mapState } from "vuex";
 export default {
   name: "Register",
   data() {
-    return { user: { email: "", password: "" } };
+    return {
+      user: { email: "", password: "" },
+    };
   },
   methods: {
+    ...mapActions(["registerUser", "cleanUserMsjError"]),
     async registrar() {
       const { email, password } = this.user;
-      const auth = getAuth();
-      await createUserWithEmailAndPassword(auth, email, password)
-        .then((response) => {
-          console.log("Succesfylly registered");
-          console.log(response);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-      this.$router.push("/");
+      await this.registerUser({ email, password });
+      if (this.userMsjError === null) {
+        this.$router.push("/");
+      }
+    },
+    cleanForm() {
+      this.user = {
+        email: "",
+        password: "",
+      };
+    },
+  },
+  computed: {
+    ...mapState(["userMsjError"]),
+    showAlert() {
+      return this.userMsjError !== null;
     },
   },
 };

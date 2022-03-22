@@ -1,11 +1,18 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+import { errorCodeToStringLabelFirebase } from "@/constants/utils";
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
     userLogin: null,
+    userMsjError: null,
     cursos: [],
   },
   mutations: {
@@ -14,7 +21,10 @@ export default new Vuex.Store({
     },
     SET_COURSES(state, payload) {
       state.cursos = payload;
-    }
+    },
+    SET_USER_MSJ_ERROR(state, payload) {
+      state.userMsjError = payload;
+    },
   },
   actions: {
     setUserLogin({ commit }, userParams) {
@@ -22,7 +32,48 @@ export default new Vuex.Store({
     },
     setCourses({ commit }, coursesParams) {
       commit('SET_COURSES', coursesParams);
-    }
+    },
+    async registerUser({ commit }, userParam) {
+      const { email, password } = userParam;
+      const auth = getAuth();
+      await createUserWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          commit('SET_USER_MSJ_ERROR', null);
+        })
+        .catch((error) => {
+          console.log(error);
+          commit('SET_USER_MSJ_ERROR', errorCodeToStringLabelFirebase(error.code));
+        });
+    },
+    async loginUser({ commit }, userParam) {
+      const { email, password } = userParam;
+      const auth = getAuth();
+      await signInWithEmailAndPassword(auth, email, password)
+        .then(() => {
+          commit('SET_USER_MSJ_ERROR', null);
+        })
+        .catch((error) => {
+          console.log(error);
+          commit('SET_USER_MSJ_ERROR', errorCodeToStringLabelFirebase(error.code));
+        });;
+    },
+    getUserLogin({ commit }) {
+      getAuth().onAuthStateChanged((user) => {
+        if (user) {
+          commit('SET_USER_LOGIN', user.email);
+        }
+      });
+    },
+    async logoutUser({ commit }) {
+      await getAuth()
+        .signOut()
+        .then(() => {
+          commit('SET_USER_LOGIN', null);
+        });
+    },
+    cleanUserMsjError({ commit }) {
+      commit('SET_USER_MSJ_ERROR', null);
+    },
   },
   getters: {
     getAlumnosPermitidos({ cursos }) {

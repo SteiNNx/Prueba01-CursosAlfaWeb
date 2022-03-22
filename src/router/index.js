@@ -26,7 +26,7 @@ const routes = [
     component: Login
   },
   {
-    path: '/',
+    path: '/registrar',
     name: 'registrar',
     component: Register
   },
@@ -43,10 +43,7 @@ import { getAuth } from "firebase/auth";
 
 router.beforeEach((to, from, next) => {
   const { currentUser } = getAuth()
-  const { meta: { authRequired } } = to
-
-  console.log(currentUser);
-  console.log(authRequired);
+  const { meta: { authRequired } } = to;
 
   if (currentUser && authRequired) {
     next()
