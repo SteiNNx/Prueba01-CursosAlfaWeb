@@ -12,16 +12,7 @@
     </b-row>
     <b-row>
       <b-col cols="12">
-        <b-table striped hover :items="cursos" :fields="fields" :busy="isLoading">
-          <!-- Loading Template -->
-          <template #table-busy>
-            <div class="text-center text-danger my-2">
-              <b-spinner class="align-middle"></b-spinner>
-              <strong>Cargando...</strong>
-            </div>
-          </template>
-          <!-- EndLoading Template -->
-
+        <b-table striped hover :items="cursos" :fields="fields">
           <!-- Table Template -->
           <template #cell(Curso)="data">
             {{ data.item.nombre }}
@@ -211,7 +202,6 @@
 
 <script>
 import { mapActions, mapGetters, mapState } from "vuex";
-import { getCursos, deleteCurso, addCurso } from "@/firebase/Api";
 
 const initialStateCurso = {
   nombre: "",
@@ -240,28 +230,16 @@ export default {
         "Acciones",
       ],
       isOpenModal: false,
-      isLoading: true,
     };
   },
   async mounted() {
-    await getCursos().then((result) => {
-      this.setCourses(result);
-      this.isLoading = false;
-    });
+    await this.getCourses();
   },
 
   methods: {
-    ...mapActions(["setCourses"]),
+    ...mapActions(["getCourses", "addCourse", "updateCourse", "deleteCourse"]),
     async deleteCursoByIdDoc(idParam) {
-      await deleteCurso(idParam).then((result) => {
-        this.isLoading = true;
-        return new Promise(async (resolve) => {
-          await getCursos().then((result2) => {
-            this.setCourses(result2);
-            this.isLoading = false;
-          });
-        });
-      });
+      await this.deleteCourse(idParam);
     },
     changeStateModal(newStateModal) {
       this.isOpenModal = newStateModal;
@@ -274,22 +252,14 @@ export default {
     },
     async handleOkModal() {
       const newDate = new Date(new Date().setMonth(new Date().getMonth() + 3));
-      await addCurso({
+      const newCourse = {
         ...this.curso,
         terminado: false,
         fecha_inicio: newDate.toLocaleDateString(),
-      }).then((result) => {
-        this.isOpenModal = false;
-        this.isLoading = true;
-        return new Promise(async (resolve) => {
-          await getCursos().then((result2) => {
-            this.setCourses(result2);
-            this.isLoading = false;
-          });
-        });
-      });
+      };
+      await this.addCourse(newCourse);
+      this.isOpenModal = false;
     },
-    
   },
   computed: {
     ...mapState(["cursos"]),

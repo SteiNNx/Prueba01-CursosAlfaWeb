@@ -22,7 +22,7 @@ export default {
     this.getUserLogin();
   },
   methods: {
-    ...mapActions(["setUserLogin", "getUserLogin", "logoutUser"]),
+    ...mapActions(["getUserLogin", "logoutUser"]),
     async salir() {
       await this.logoutUser();
       this.$router.push("/ingresar");
